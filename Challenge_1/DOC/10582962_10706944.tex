@@ -21,8 +21,8 @@
 \end{titlepage}
 \printindex
 
-\tableofcontents
-\pagebreak
+%\tableofcontents
+%\pagebreak
 
 %1
 \section{What’s the difference between the message with MID:
@@ -32,12 +32,12 @@ Using Wireshark filter: \[ coap.mid == 3978 \; \&\&  \; coap.mid == 22636 \] we 
 %2
 \section{Does the client receive the response of message No.
 6949?}
-First of all using Wireshark \textit{No.} column we found the message number 6949 and we read its \textit{MID}. After this using filter: \[ coap.mid == 28357 \] we discovered that there was an \textit{ACK} referred to the previous one, that contains error message \textit{4.05}. That means the method is not allowed, so the client did not received the response.
+First of all using Wireshark \textit{No.} column we found the message number 6949 and we read its \textit{MID}. After this using filter: \[ coap.mid == 28357 \] we discovered that there was an \textit{ACK} containing the error message \textit{4.05}, which means the method is not allowed therefore the client did not receive any other response.
 
 %3
 \section{How many replies of type confirmable and result code
 “Content” are received by the server “localhost”?}
-Using filter: \[ coap.type == 0 \; \&\&  \; ip.dst == 127.0.0.1 \; \&\& \; coap.code == 69 \] we found out that there was 8 lines
+Using filter: \[ coap.type == 0 \; \&\&  \; ip.dst == 127.0.0.1 \; \&\& \; coap.code == 69 \] we found out that there were 8 replies.
 
 %4
 \section{How many messages containing the topic
@@ -49,27 +49,27 @@ and so on?}
 %5
 \section{How many clients connected to the broker “hivemq”
 have specified a will message?}
-First of all we found "hivemq" ip addresses (18.185.199.22, 3.120.68.56). Using filter: \[ mqtt.willmsg \; \&\& \; mqtt.clientid\_len > 0 \] we have selected
-all connection messages with \textit{will flag} setted and sended by not null \textit{ClientID}. Browsing all the entries we counted 3 different clients.
+First of all we found "hivemq" ip addresses through \textit{DNS} messages (18.185.199.22, 3.120.68.56). Using filter: \[ mqtt.willmsg \; \&\& \; mqtt.clientid\_len > 0 \] we have selected
+all connection messages with \textit{will flag} set and sent by not null \textit{ClientID}. Browsing all the entries we counted 3 different clients.
 
 %6
-\section{How many publishes with QoS 1 don't receive thr ACK?}
+\section{How many publishes with QoS 1 don't receive the ACK?}
 Using filter: \[ mqtt.msgtype == 3 \; \&\& \; mqtt.qos == 1 \] we got all published messages with QoS equals to 1 (124). \hfill \break
 Using filter: \[ mqtt.msgtype == 4 \] we got all \textit{ACK} messages for the published one (74). \hfill \break
-By computing the difference \[ 124-74 = 50\] we obtained the number of messages that did not receive an \textit{ACK}
+By computing the difference \[ 124-74 = 50\] we obtained the number of messages that did not receive an \textit{ACK}.
 
 %7
 \section{How many last will messages with QoS set to 0 are
 actually delivered?}
 
 %8
-\section{Are all the messages with QoS 0 published by the
-client “4m3DWYzWr40pce6OaBQAfk” correctly delivered
+\section{Are all the messages with QoS\textgreater  0 published by the
+client \break“4m3DWYzWr40pce6OaBQAfk” correctly delivered
 to the subscribers?}
 Using filter: \[ mqtt.clientid == "4m3DWYzWr40pce6OaBQAfk"\] we found sender ip address (10.0.2.15), source port (58313), destination ip (5.196.95.208). \hfill \break
-Using filter: \[ ip.src == 10.0.2.15 \; \&\& \; tcp.srcport == 58313 \; \&\& \; mqtt.qos > 0\; \&\& \; mqtt.msgtype == 3\] we found that the client sent one pub message with \textit{QoS} setted to 2. \hfill \break
+Using filter: \[ ip.src == 10.0.2.15 \; \&\& \; tcp.srcport == 58313 \; \&\& \; mqtt.qos > 0\; \&\& \; mqtt.msgtype == 3\] we found that the client sent one pub message with \textit{QoS} set to 2. \hfill \break
 Using filter: \[ ip.src == 5.196.95.208 \; \&\& \; tcp.dstport == 58313 \; \&\& \; ip.dst == 10.0.2.15 \; \&\& \; mqtt.msgtype == 5\] we got the \textit{PUBREC} message sended from the broker to the client. \hfill \break
-Not having found any \textit{PUBREL} message, it means that the borker successfully received the message but did not send it to any other client. So no messages published by “4m3DWYzWr40pce6OaBQAfk” is correctly delivered
+Not having found any \textit{PUBREL} message, it means that the borker successfully received the message but did not send it to any other client. So no messages published by “4m3DWYzWr40pce6OaBQAfk” is correctly delivered.
 
 
 %9
@@ -99,5 +99,6 @@ The length changes from message to message because the connection message may or
 
 %10
 \section{Why there aren’t any REQ/RESP pings in the pcap?}
+There aren't any REQ/RESP pings in the pcap because the clients and the broker keep ingeracting without ever letting the Keep Alive timers of the clients expire.
 
 \end{document}
