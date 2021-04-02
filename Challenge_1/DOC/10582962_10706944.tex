@@ -51,8 +51,8 @@ There is only a connection message sent by jane specifying a last will message o
 %5
 \section{How many clients connected to the broker “hivemq”
 have specified a will message?}
-First of all we found "hivemq" ip addresses through \textit{DNS} messages (18.185.199.22, 3.120.68.56). Using filter: \[ (ip.dst == 18.185.199.22 \; || \; ip.dst == 3.120.68.56) \; \&\& \; mqtt.willmsg \; \&\& \; mqtt.clientid\_len > 0 \] we have selected
-all connection messages with \textit{will flag} set and sent by not null \textit{ClientID}. Browsing all the entries we counted 3 different clients.
+Using filter: \[ ip.dst\_host == broker.hivemq.com \; \&\& \; mqtt.msgtype == 1 \; \&\& \; mqtt.willmsg_len > 0 \] we have selected
+all connection messages with \textit{will message} specified sent to \textit{hivemq}. Counting the connection messages with the same \textit{ClientId} and those in which the \textit{CleintId} was not specified we found 16 messages
 
 %6
 \section{How many publishes with QoS 1 don't receive the ACK?}
