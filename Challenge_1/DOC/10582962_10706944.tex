@@ -45,6 +45,8 @@ Using filter: \[ coap.type == 0 \; \&\&  \; ip.dst == 127.0.0.1 \; \&\& \; coap.
 user name: “jane”? Where * replaces the dep. number,
 e.g. factory/department1/+, factory/department2/+
 and so on?}
+Using filter: \[ mqtt.username == jane\] we got 4 connection messages. Searching also for \textit{CleintId} associated with each message we have not obtained any further messages besides those already found. \hfill \break
+There is only a connection message sent by jane specifying a last will message on the topic \[ "factory/department1/section3/hydraulic\_valve" \] so it can be assumed that at least one message is published on this topic when the client is disconnected
 
 %5
 \section{How many clients connected to the broker “hivemq”
