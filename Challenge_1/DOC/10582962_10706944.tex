@@ -45,33 +45,39 @@ Using filter: \[ coap.type == 0 \; \&\&  \; ip.dst == 127.0.0.1 \; \&\& \; coap.
 user name: “jane”? Where * replaces the dep. number,
 e.g. factory/department1/+, factory/department2/+
 and so on?}
-Using filter: \[ mqtt.username == jane\] we got 4 connection messages. Searching also for \textit{CleintId} associated with each message we have not obtained any further messages besides those already found. \hfill \break
-There is only a connection message sent by jane specifying a last will message on the topic \[ "factory/department1/section3/hydraulic\_valve" \] so it can be assumed that at least one message is published on this topic when the client is disconnected
+Using filter: \[ mqtt.username == jane\] we got 4 connection messages. Abbiamo seguito il flusso TCP di questi 4 messaggi trovando 4 diverse porte (50985, 40989, 42821, 40004). \hfill \break
+Usando il filtro: \[ mqtt.topic \; contains \; "factory" \; \&\& \; ( tcp.port == 50985 \; || \; tcp.port == 40989 \; || \; tcp.port == 42821 \; || \; tcp.port == 40004 ) \; \&\& \; mqtt.msgtype == 3 \] 
+abbiamo trovato 10 messaggi ma non esiste alcun messaggio del livello richiesto poiché essendoci nella richiesta un + e non un \# , i publish messages sono tutti di livello inferiore.
 
 %5
 \section{How many clients connected to the broker “hivemq”
 have specified a will message?}
-Using filter: \[ ip.dst\_host == broker.hivemq.com \; \&\& \; mqtt.msgtype == 1 \; \&\& \; mqtt.willmsg_len > 0 \] we have selected
-all connection messages with \textit{will message} specified sent to \textit{hivemq}. Counting the connection messages with the same \textit{ClientId} and those in which the \textit{CleintId} was not specified we found 16 messages
+Using filter: \[ ip.dst\_host == broker.hivemq.com \; \&\& \; mqtt.msgtype == 1 \; \&\& \; mqtt.willmsg\_len > 0 \] we have selected
+all connection messages with \textit{will message} specified sent to \textit{hivemq}. Counting also the connection messages with the same \textit{ClientId} and those in which the \textit{CleintId} was not specified we found 16 messages
+dei quali 3 hanno ClinetId distinti, uno è duplicato, il resto non ha specificato ClientId
 
 %6
 \section{How many publishes with QoS 1 don't receive the ACK?}
 Using filter: \[ mqtt.msgtype == 3 \; \&\& \; mqtt.qos == 1 \] we got all published messages with QoS equals to 1 (124). \hfill \break
 Using filter: \[ mqtt.msgtype == 4 \] we got all \textit{ACK} messages for the published one (74). \hfill \break
 By computing the difference \[ 124-74 = 50\] we obtained the number of messages that did not receive an \textit{ACK}.
+Abbiamo considerato anche eventuali publish messages duplicati
 
 %7
 \section{How many last will messages with QoS set to 0 are
 actually delivered?}
+Abbiamo interpretando la domanda come tutti i last will messages ricevuti, poiché non c'è modo di sapere i last will messages specificati da i clienti della cattura verso terzi. Quindi abbiamo per prima cosa notato che tutti i will messages specificati nei messaggi di connect, contenevano 
+la parola "error".Usando il filtro \[ mqtt.msgtype == 3 \; \&\& \; mqtt.qos == 0 \; \&\& \; mqtt.msg contains "error" \]
+per avere tutti i messaggi pubblicati contenenti la parola error (dedotti essere last will messages ricevuti), abbiamo trovato un solo messaggio.
 
 %8
 \section{Are all the messages with QoS\textgreater  0 published by the
 client \break“4m3DWYzWr40pce6OaBQAfk” correctly delivered
 to the subscribers?}
 Using filter: \[ mqtt.clientid == "4m3DWYzWr40pce6OaBQAfk"\] we found sender ip address (10.0.2.15), source port (58313), destination ip (5.196.95.208). \hfill \break
-Using filter: \[ ip.src == 10.0.2.15 \; \&\& \; tcp.srcport == 58313 \; \&\& \; mqtt.qos > 0\; \&\& \; mqtt.msgtype == 3\] we found that the client sent one pub message with \textit{QoS} set to 2. \hfill \break
-Using filter: \[ ip.src == 5.196.95.208 \; \&\& \; tcp.dstport == 58313 \; \&\& \; ip.dst == 10.0.2.15 \; \&\& \; mqtt.msgtype == 5\] we got the \textit{PUBREC} message sended from the broker to the client. \hfill \break
-Not having found any \textit{PUBREL} message, it means that the borker successfully received the message but did not send it to any other client. So no messages published by “4m3DWYzWr40pce6OaBQAfk” is correctly delivered.
+Using filter: \[ ip.src == 10.0.2.15 \; \&\& \; tcp.srcport == 58313 \; \&\& \; mqtt.qos > 0\; \&\& \; mqtt.msgtype == 3\] we found that the client sent one pub message with \textit{QoS} set to 2, to the same server as previous connection message. \hfill \break
+Using filter: \[ ip.src == 5.196.95.208 \; \&\& \; tcp.dstport == 58313 \; \&\& \; ip.dst == 10.0.2.15 \; \&\& \; mqtt.msgtype == 5\] we got the \textit{PUBREC} message (same \textit{Message Identifier} equal to 3) sended from the broker to the client. \hfill \break
+It means that the borker successfully received the message and has sent it to the \textit{"factory/department1/section1/deposit"} subscribers correctly. So it can be said that all publish messages sended by the client have been correctly delivered even if there is no a \textit{PUBREL} message sended to the server 
 
 
 %9
@@ -98,9 +104,12 @@ Analyzing the \textit{"Msg Len"} field of each message we obtained:
 \end{itemize}
 Calculating the average, we obtained an average length of 30.22 bytes. \hfill \break
 The length changes from message to message because the connection message may or may not contain additional information such as the last will message.
+(Nella versione di wireshark usata per analizzare il pcapng non c'erano malformed messages)
 
 %10
 \section{Why there aren’t any REQ/RESP pings in the pcap?}
-There aren't any REQ/RESP pings in the pcap because the clients and the broker keep ingeracting without ever letting the Keep Alive timers of the clients expire.
+There aren’t any REQ/RESP pings in the pcap because the clients and the broker keep interacting without ever
+letting the Keep Alive timers of the clients expire.
+
 
 \end{document}
