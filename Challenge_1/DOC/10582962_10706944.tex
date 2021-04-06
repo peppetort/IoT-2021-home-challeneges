@@ -47,7 +47,8 @@ e.g. factory/department1/+, factory/department2/+
 and so on?}
 Using filter: \[ mqtt.username == jane\] we got 4 connection messages. We noticed that these 4 connect messages have 4 different tcp ports (50985, 40989, 42821, 40004). \hfill \break
 Using the filter: \[ mqtt.topic \; contains \; "factory" \; \&\& \; ( tcp.port == 50985 \; || \; tcp.port == 40989 \; || \; tcp.port == 42821 \; || \; tcp.port == 40004 )\] \[  \; \&\& \; mqtt.msgtype == 3 \]
-we found 10 messages but none of them were of the topic “factory/department*/+”.
+we found 10 messages but none of them were of the topic \textit{“factory/department*/+”}. \hfill \break
+Since the requested topic is not \textit{“factory/department*/\#”} there are 0 messages respecting the request
 
 %5
 \section{How many clients connected to the broker “hivemq”
