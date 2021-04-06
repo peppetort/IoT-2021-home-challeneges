@@ -45,30 +45,28 @@ Using filter: \[ coap.type == 0 \; \&\&  \; ip.dst == 127.0.0.1 \; \&\& \; coap.
 user name: “jane”? Where * replaces the dep. number,
 e.g. factory/department1/+, factory/department2/+
 and so on?}
-Using filter: \[ mqtt.username == jane\] we got 4 connection messages. Abbiamo seguito il flusso TCP di questi 4 messaggi trovando 4 diverse porte (50985, 40989, 42821, 40004). \hfill \break
-Usando il filtro: \[ mqtt.topic \; contains \; "factory" \; \&\& \; ( tcp.port == 50985 \; || \; tcp.port == 40989 \; || \; tcp.port == 42821 \; || \; tcp.port == 40004 ) \; \&\& \; mqtt.msgtype == 3 \] 
-abbiamo trovato 10 messaggi ma non esiste alcun messaggio del livello richiesto poiché essendoci nella richiesta un + e non un \# , i publish messages sono tutti di livello inferiore.
+Using filter: \[ mqtt.username == jane\] we got 4 connection messages. We noticed that these 4 connect messages have 4 different tcp ports (50985, 40989, 42821, 40004). \hfill \break
+Using the filter: \[ mqtt.topic \; contains \; "factory" \; \&\& \; ( tcp.port == 50985 \; || \; tcp.port == 40989 \; || \; tcp.port == 42821 \; || \; tcp.port == 40004 )\] \[  \; \&\& \; mqtt.msgtype == 3 \]
+we found 10 messages but none of them were of the topic “factory/department*/+”.
 
 %5
 \section{How many clients connected to the broker “hivemq”
 have specified a will message?}
 Using filter: \[ ip.dst\_host == broker.hivemq.com \; \&\& \; mqtt.msgtype == 1 \; \&\& \; mqtt.willmsg\_len > 0 \] we have selected
-all connection messages with \textit{will message} specified sent to \textit{hivemq}. Counting also the connection messages with the same \textit{ClientId} and those in which the \textit{CleintId} was not specified we found 16 messages
-dei quali 3 hanno ClinetId distinti, uno è duplicato, il resto non ha specificato ClientId
+all connection messages with \textit{will message} specified sent to \textit{hivemq}. Counting also the connection messages with the same \textit{ClientId} and those in which the \textit{CleintId} was not specified we found 16 messages: 3 of them have distinct ClientID, 1 is a duplicate and the rest of them have the ClientID not specified.
 
 %6
 \section{How many publishes with QoS 1 don't receive the ACK?}
 Using filter: \[ mqtt.msgtype == 3 \; \&\& \; mqtt.qos == 1 \] we got all published messages with QoS equals to 1 (124). \hfill \break
 Using filter: \[ mqtt.msgtype == 4 \] we got all \textit{ACK} messages for the published one (74). \hfill \break
-By computing the difference \[ 124-74 = 50\] we obtained the number of messages that did not receive an \textit{ACK}.
-Abbiamo considerato anche eventuali publish messages duplicati
+By computing the difference \[ 124-74 = 50\] we obtained the number of messages that did not receive an \textit{ACK}. \hfill \break
+During the count we have considered also the duplicate messages because those are also the ones which do not receive the \textit{ACK} messages.
 
 %7
 \section{How many last will messages with QoS set to 0 are
 actually delivered?}
-Abbiamo interpretando la domanda come tutti i last will messages ricevuti, poiché non c'è modo di sapere i last will messages specificati da i clienti della cattura verso terzi. Quindi abbiamo per prima cosa notato che tutti i will messages specificati nei messaggi di connect, contenevano 
-la parola "error".Usando il filtro \[ mqtt.msgtype == 3 \; \&\& \; mqtt.qos == 0 \; \&\& \; mqtt.msg contains "error" \]
-per avere tutti i messaggi pubblicati contenenti la parola error (dedotti essere last will messages ricevuti), abbiamo trovato un solo messaggio.
+We tried to retrieve all the last will messages delivered to us because those were the the only last will messages that can be seen by this pcap. We noticed that all the will messages sent during the connection contained the keyword "error".\hfill\break
+Using the filter \[ mqtt.msgtype == 3 \; \&\& \; mqtt.qos == 0 \; \&\& \; mqtt.msg contains "error" \] to see all the publish messages containing the word "error", we found only one message.
 
 %8
 \section{Are all the messages with QoS\textgreater  0 published by the
@@ -103,8 +101,8 @@ Analyzing the \textit{"Msg Len"} field of each message we obtained:
    \item 1 message of length 83
 \end{itemize}
 Calculating the average, we obtained an average length of 30.22 bytes. \hfill \break
-The length changes from message to message because the connection message may or may not contain additional information such as the last will message.
-(Nella versione di wireshark usata per analizzare il pcapng non c'erano malformed messages)
+The length changes from message to message because the connection message may or may not contain additional information such as the last will message. \hfill \break
+(The wireshark version used to analyze the pcap didn't detect any malformed messages)
 
 %10
 \section{Why there aren’t any REQ/RESP pings in the pcap?}
