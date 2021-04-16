@@ -27,17 +27,19 @@
 
 \pagebreak
 \section{Node-RED}
-Abbiamo fatto il parsing del CSV fornito usando come separatore la virgola. Dal momento che il file parsato restituiva alcuni valori di difficile interpretazione,
-abbiamo deciso di ispezionare tutte le colonne di ogni riga. \hfill \break \break
- Quindi abbiamo filtrato il contenuto selezionando le celle non nulle contenenti un \textit{Publish Message}. \hfill \break 
-Per ogni cella selezioanata abbiamo filtrato anche tutti i messaggi contenenti il carattere esadecimale \textit{7b} ('\{')
-così da essere sicuri di avere messaggi aventi un reale contenuto associato.\hfill \break \break
+Abbiamo fatto il parsing del CSV fornito usando come separatore la virgola. Per una migliore leggibilità del codice abbiamo impostato il nodo \textit{csv}
+in modo tale da restituire tutti i valori in un singolo array. \hfill \break 
+
+Per ogni valore dell'array (corrispondente ad una riga del csv) abbaiamo ispezionato tutte le colonne e abbiamo filtrato le righe contenenti un 
+\textit{Publish Message}. \hfill \break
+A questo punto abbiano notato che il \textit{Publish Message} associato ad ogni \textit{payload} era ripetuto più volte. Quindi abbiamo creato un algoritmo 
+per mappare ogni \textit{payload} con il corrispondente \textit{Publish Message} (considerando che erano ripetuti secondo un ordine sequenziale). \hfill \break 
+
 Dai messaggi ottenuti abbiamo quindi proseguito creando due diramazioni, una per filtrare tutti i messaggi con topic \textit{factory/department1/section1/plc} oppure 
 \textit{factory/department3/section3/plc} e l'altra per tutti i messaggi aventi come topic \textit{factory/department1/section1/hydraulic\_valve} oppure 
-\textit{factory/department3/section3/hydraulic\_valve}. \hfill \break
-Dopodiché abbiamo isolato il messaggio utilizzando gli estremi \textit{7b} ('\{') e \textit{7d} ('\}') e quindi decodificato. \hfill \break
-Usando il formato \textit{JSON} abbiamo estratto il campo '\textit{value}' ed impostato il \textit{msg.topic} e \textit{msg.paylod} per iniviare il valore tramite mqtt. \hfill \break \break
-Per permetter a \textit{ThingSpeak} di ricevere correttamente tutti i valori, abbiamo impostato un l'invio di un messaggio ogni 30 secondi im maniera alternata tra i valori di \textit{plc} e quelli di  \textit{hydraulic\_valve}
+\textit{factory/department3/section3/hydraulic\_valve}. \hfill \break 
+Dopo aver decodificato i messaggi ed estratto il valore richeisto, abbiamo aggiunto un nodo \textit{split} per procedere all'invio singolo dei valori.
+\hfill \break I messaggi sono stati inviati con un intervallo di 30 secondi tra uno e l'altro.
 
 \section{ThingSpeak}
 Creato un nuovo canale, abbiamo aggiunto due \textit{fields} una per i valori di \textit{plc} ed una per quelli di \textit{hydraulic\_valve} \hfill \break
@@ -47,8 +49,8 @@ Abbiamo aggiunto anche due bottoni ognuno associatp ad una \textit{field} impost
 Link a \textit{ThingSpeak}:  \href{https://www.thingspeak.com/channels/1359547}{https://www.thingspeak.com/channels/1359547}
 
 \section{Conclusione}
-Abbiamo trovato 19 valori riguardanti \textit{plc}: 4,21,66,66,66,764,32,32,36,36,5,66,1747,4,31,764,14,2010,1380 \hfill \break 
-e 17 valori riguardanti \textit{hydraulic\_valve}: 2,1344,2501,60,11,559,30,42,20,3162,195,1,1,39,1344,1344,39
+Abbiamo trovato 20 valori riguardanti \textit{plc}: 4,403,21,66,66,66,764,32,32,36,36,5,66,1747,4,31,764,14,2010,1380  \hfill \break 
+e 29 valori riguardanti \textit{hydraulic\_valve}: 2,1344,14,638,14,1344,60,11,559,30,42,20,3162,14,195,2,14,14,14,3162,3162,1,1,39,14,1344,1344,3162,39
 
 
 
