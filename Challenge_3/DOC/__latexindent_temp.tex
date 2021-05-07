@@ -26,5 +26,23 @@
 
 \pagebreak
 
+\section{Tiny-OS Code}
+Abbiano iniziato creando il file \textit{foo.h} in cui abbiamo specificato la struttura dei messaggi.
+Abbiamo creato un campo \textit{id} per indicare l'id del sender e un campo \textit{counter} per il contatore.
+Abbiamo quindi creato il file \textit{fooC.nc} in cui abbiamo implementato la logica.
+Abbiamo creato le variabili:
+\begin{itemize}
+   \item \textit{bool lock}: per controllare che i messaggi inviati non si sovrappongano
+   \item \textit{uint16\_t counter}: per rappresentare il contatore locale di ogni mote (inizializzato a 0)
+   \item \textit{bool led0, led1, le2}: per rappresentare lo stato dei led di ogni mote
+\end{itemize}
+Abbiamo impostato la frequenza di ogni mote come indicato da specifiche e implementato le funzioni di send con messaggi in broadcast e receive.
+
+
+\section{Cooja Simulation}
+Creata una nuova simulazione abbiamo impostato 3 nuovi sky motes compilati tramite \textit{make telosb}.
+Tramite delle \textit{printf} di log abbiamo controllato che i messaggi venissero inviati e ricevuti correttamente.
+Abbiamo quindi stampato i valori richiesti per il mote 2 in ordine (\textit{led2 led1 led0}).
+
 
 \end{document}
