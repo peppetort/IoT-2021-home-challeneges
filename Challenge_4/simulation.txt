@@ -1,0 +1,35 @@
+DEBUG (1): Application booted.
+DEBUG (1): Radio on!
+DEBUG (1): Payload REQ Sent
+	 type: 1 
+ 	 counter: 0 
+DEBUG (1): Payload REQ Sent
+	 type: 1 
+ 	 counter: 1 
+DEBUG (1): Payload REQ Sent
+	 type: 1 
+ 	 counter: 2 
+DEBUG (1): Payload REQ Sent
+	 type: 1 
+ 	 counter: 3 
+DEBUG (1): Payload REQ Sent
+	 type: 1 
+ 	 counter: 4 
+DEBUG (2): Application booted.
+DEBUG (2): Radio on!
+DEBUG (1): Payload REQ Sent
+	 type: 1 
+ 	 counter: 5 
+DEBUG (2): Payload REQ Received
+	 type: 1 
+ 	 counter: 5 
+DEBUG (1): ACK received...stopping timer 
+DEBUG (2): Payload RESP Sent
+	 type: 2 
+ 	 counter: 5 
+	 value: 245 
+DEBUG (1): Payload RESP Received
+	 type: 2 
+ 	 counter: 5 
+	 value: 245 
+DEBUG (2): ACK received
