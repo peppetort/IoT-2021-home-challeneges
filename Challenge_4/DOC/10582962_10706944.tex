@@ -1,3 +1,4 @@
+  
 \documentclass{article}
 \newcommand\tab[1][1cm]{\hspace*{#1}}
 \usepackage[margin=60pt]{geometry}
@@ -25,5 +26,30 @@
 \end{titlepage}
 
 \pagebreak
+
+\section{SendAck.h}
+In this file we described the message struct, composed of three field:
+
+\begin{itemize}
+	\item \textit{msg\_type}: which describes the type of message (REQ/RESP).
+	\item \textit{msg\_counter}: which keeps track of the message number.
+	\item \textit{msg\_value}: which represents the value read from the fake sensor.
+\end{itemize}
+
+\section{SendAckAppC.nc}
+We used this file to wire all the modules defined in the \textit{SendAckC.nc} file. And we also wired the \textit{fakeSensorC.nc} file to read the values from the fake sensor.
+
+
+\section{SendAckC.nc}
+In this file we implemented all the logic of the single modules. We intensively used the DEBUG statements to make the debugging process easier. \hfill \break
+We used the variable TOS\_NODE\_ID to differentiate the functions each mote has to run and used the module \textit{PacketAcknowledgements} to send the ACK messages.
+
+\section{topology.txt}
+We used this file to describe the topology of our motes.
+
+\section{RunSimulationScript.py}
+This python script is used to initialize the motes and run the simulation. In the end all the log is printed in a text file.
+
+
 
 \end{document}
