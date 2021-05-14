@@ -27,9 +27,9 @@ DEBUG (1): ACK received...stopping timer
 DEBUG (2): Payload RESP Sent
 	 type: 2 
  	 counter: 5 
-	 value: 245 
+	 value: 50421 
 DEBUG (1): Payload RESP Received
 	 type: 2 
  	 counter: 5 
-	 value: 245 
+	 value: 50421 
 DEBUG (2): ACK received

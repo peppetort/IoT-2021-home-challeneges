@@ -65,8 +65,8 @@ module sendAckC {
   	if (call AMSend.send(2, &packet, sizeof(msg_t)) == SUCCESS) {
 		locked = TRUE;
 		dbg("radio_pack","Payload REQ Sent\n" );
-		dbg_clear("radio_pack", "\t type: %hhu \n ", msg->msg_type);
-		dbg_clear("radio_pack", "\t counter: %hhu \n", msg->msg_counter);
+		dbg_clear("radio_pack", "\t type: %u \n ", msg->msg_type);
+		dbg_clear("radio_pack", "\t counter: %u \n", msg->msg_counter);
     }
  }        
 
@@ -159,8 +159,8 @@ module sendAckC {
     			sendResp();
     			
     			dbg("radio_pack","Payload REQ Received\n" );
-      			dbg_clear("radio_pack", "\t type: %hhu \n ", msg->msg_type);
-	  			dbg_clear("radio_pack", "\t counter: %hhu \n", msg->msg_counter);
+      			dbg_clear("radio_pack", "\t type: %u \n ", msg->msg_type);
+	  			dbg_clear("radio_pack", "\t counter: %u \n", msg->msg_counter);
     			
     			return buf;
     		}
@@ -168,9 +168,9 @@ module sendAckC {
     }else if(TOS_NODE_ID == 1){
     msg_t* msg = (msg_t*)payload;
     dbg("radio_pack","Payload RESP Received\n" );
-    dbg_clear("radio_pack", "\t type: %hhu \n ", msg->msg_type);
-	dbg_clear("radio_pack", "\t counter: %hhu \n", msg->msg_counter);
-	dbg_clear("radio_pack", "\t value: %hhu \n", msg->msg_value);
+    dbg_clear("radio_pack", "\t type: %u \n ", msg->msg_type);
+	dbg_clear("radio_pack", "\t counter: %u \n", msg->msg_counter);
+	dbg_clear("radio_pack", "\t value: %u \n", msg->msg_value);
 	}
   }
   
@@ -196,9 +196,9 @@ module sendAckC {
   	if (call AMSend.send(1, &packet, sizeof(msg_t)) == SUCCESS) {
 		locked = TRUE;
 		dbg("radio_pack","Payload RESP Sent\n" );
-		dbg_clear("radio_pack", "\t type: %hhu \n ", msg->msg_type);
-		dbg_clear("radio_pack", "\t counter: %hhu \n", msg->msg_counter);
-		dbg_clear("radio_pack", "\t value: %hhu \n", msg->msg_value);
+		dbg_clear("radio_pack", "\t type: %u \n ", msg->msg_type);
+		dbg_clear("radio_pack", "\t counter: %u \n", msg->msg_counter);
+		dbg_clear("radio_pack", "\t value: %u \n", msg->msg_value);
     }
 }
 }
