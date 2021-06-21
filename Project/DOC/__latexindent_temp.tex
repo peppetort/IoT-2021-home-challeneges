@@ -3,7 +3,9 @@
 \usepackage[margin=60pt]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
-\usepackage{makeidx}\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\graphicspath{{./res/}}
 \makeindex
 \begin{document}
 \begin{titlepage}
@@ -14,17 +16,62 @@
       \Large Prof. Matteo Cesana - Year 2020/2021\\
       \vspace{5mm} %5mm vertical space
       \large\textit{Gabba Rohit [codice persona: 10706944]}
-      \linebreak
+      \\
       \large\textit{Tortorelli Giuseppe [codice persona: 10582962]}
    \end{center}
    \vspace*{\stretch{2.0}}
 \end{titlepage}
 \printindex
 
-\tableofcontents
-\pagebreak
+\section{TinyOS}
+Al fine di identificare i mesaggi consecutivi abbiamo scelto di 
+associare ad ogni messaggio un id incrementale. \\
+La struttura è la seguente:
 
+\begin{itemize}
+   \item \textit{id}: contentente l'id di ogni mote
+   \item \textit{msg\_number}: l'id del messaggio
+\end{itemize}
 
+Abbiamo scelto di associare ad ogni mote 3 memorie di grandezza fissata:
 
+\begin{itemize}
+   \item \textit{near\_motes\_ids}: per salvare l'id dei nodi vicini 
+   \item \textit{near\_motes\_counters}: per contare quanti messaggi consecutivi sono stati ricevuti 
+   \item \textit{near\_motes\_msgs\_number}: per salvare l'id del messaggio che ci si aspetta di ricevere
+\end{itemize}
+
+Ogni volta che un mote invia un messaggio, incrementa l'id da associare al messaggio e lo invia.\\\\
+Alla ricezione di un messaggio, si scorre l'array \textit{near\_motes\_ids} in cerca dell'id del mote da cui è stato 
+ricevuto il messaggio. \\
+Se l'id non viene trovato, viene aggiunto nella prima cella disponibile.
+Altrimenti si procede con la verifica dell'id del messaggio. \\
+Quindi si legge il valore aspettato dall'array \textit{near\_motes\_msgs\_number} e si confronta con quello ricevuto. 
+Se i due valori non corrispondo, il contatore associato al mote viene azzerato.\\\\
+Si procede quindi alla verifica del valore contenuto nell'array \textit{near\_motes\_counters}: nel caso sono stati
+ricevuti 10 messaggi consecutivi, si lancia l'allarme e si azzera il contatore, altrimenti il contatore viene incrementato.
+
+\section{Cooja}
+Abbiamo testato il funzionamento in \textit{Cooja} inserendo 5 \textit{Sky mote} e provando varie configurazioni di questi nella Network.\\
+Nell'implementazioe abbiamo assunto che la ricezione dei messaggi avvenga senza interferenze, per questo abbiamo
+ignorato i casi in cui il contatore viene resettato a causa di un messaggio non consegnato correttamente.
+\\\\
+Di seguito gli screenshots delle configurazioni testate (sono ordinati secondo il log file)
+\\
+\includegraphics[scale=0.1]{inserire_immagine_qui_e_in_cartella_res.png}
+\\
+Ad ogni nodo abbiamo associato un socket verso l'ip di \textit{Node-RED} ognuno con una porta differente (da 6001 a 6005)
+
+\section{Node-RED}
+
+Abbiamo creato 5 (numero di mote scelti per il testing) nodi \textit{tcp in} ognuno ascoltante sulla porta del nodo associato.\\
+Abbiamo quindi inserito un nodo \textit{function} per filtrare i messaggi di allarme ed estrarne gli id dei mote interessati.\\
+Infine abbiamo utilizzato un nodo \textit{htttp request} per mandare una POST request verso \textit{IFTTT} specificando la nostra API key
+
+\section{IFTTT}
+Ricevuti i dati tramite un applet \textit{Webhooks} ascoltante sull'evento \textit{ALARM},
+inviamo una notifica sull'app \textit{IFTTT} per cellulare con il seguente testo:\\\\
+\textit{"ALARM mote x: I'm close to mote y! COVID"}\\\\
+Dove \textit{x} è l'id del mote che ha inviato il messaggio.
 
 \end{document}

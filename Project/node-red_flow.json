@@ -1,0 +1,160 @@
+[
+    {
+        "id": "b5d1af96.0416f8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "8cdbde0.fa98fa",
+        "type": "tcp in",
+        "z": "b5d1af96.0416f8",
+        "name": "Listening for Mote 1",
+        "server": "server",
+        "host": "localhost",
+        "port": "6001",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "base64": false,
+        "x": 190,
+        "y": 320,
+        "wires": [
+            [
+                "fb7ad427.5386f8"
+            ]
+        ]
+    },
+    {
+        "id": "fb7ad427.5386f8",
+        "type": "function",
+        "z": "b5d1af96.0416f8",
+        "name": "Create message for IFTTT",
+        "func": "\nif(msg.payload.includes(\"ALARM\")){\n    var wellFormatted = msg.payload.replace(/\\D/g,' ').trim()\n\n    var parameters =  wellFormatted.match(/\\d+/g).map(Number);\n    \n    if(parameters.length == 4){\n        var mote_id = parameters[2]\n        var close_mote_id = parameters[3]\n\n        msg.event = \"ALARM\"\n        msg.payload = {\"value1\":mote_id,\"value2\":close_mote_id}\n\n        return msg;   \n        \n    }\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 540,
+        "wires": [
+            [
+                "a2348be7.116e5",
+                "d31f9973.d5692"
+            ]
+        ]
+    },
+    {
+        "id": "d31f9973.d5692",
+        "type": "http request",
+        "z": "b5d1af96.0416f8",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "url": "https://maker.ifttt.com/trigger/{{event}}/with/key/bxnUUC6enRo4xGFUffFgq4P2mL4Fcqf1Tk9sevtCAqn",
+        "tls": "",
+        "x": 730,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "29fc7bda.c9b78c",
+        "type": "tcp in",
+        "z": "b5d1af96.0416f8",
+        "name": "Listening for Mote 2",
+        "server": "server",
+        "host": "localhost",
+        "port": "6002",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "base64": false,
+        "x": 190,
+        "y": 440,
+        "wires": [
+            [
+                "fb7ad427.5386f8"
+            ]
+        ]
+    },
+    {
+        "id": "a5cd084d.00766",
+        "type": "tcp in",
+        "z": "b5d1af96.0416f8",
+        "name": "Listening for Mote 3",
+        "server": "server",
+        "host": "localhost",
+        "port": "6003",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "base64": false,
+        "x": 190,
+        "y": 540,
+        "wires": [
+            [
+                "fb7ad427.5386f8"
+            ]
+        ]
+    },
+    {
+        "id": "ac335749.15833",
+        "type": "tcp in",
+        "z": "b5d1af96.0416f8",
+        "name": "Listening for Mote 4",
+        "server": "server",
+        "host": "localhost",
+        "port": "6004",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "base64": false,
+        "x": 190,
+        "y": 640,
+        "wires": [
+            [
+                "fb7ad427.5386f8"
+            ]
+        ]
+    },
+    {
+        "id": "d38e1efc.eb8ab8",
+        "type": "tcp in",
+        "z": "b5d1af96.0416f8",
+        "name": "Listening for Mote 5",
+        "server": "server",
+        "host": "localhost",
+        "port": "6005",
+        "datamode": "stream",
+        "datatype": "utf8",
+        "newline": "\\n",
+        "topic": "",
+        "base64": false,
+        "x": 190,
+        "y": 740,
+        "wires": [
+            [
+                "fb7ad427.5386f8"
+            ]
+        ]
+    },
+    {
+        "id": "a2348be7.116e5",
+        "type": "debug",
+        "z": "b5d1af96.0416f8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 710,
+        "y": 600,
+        "wires": []
+    }
+]
