@@ -24,54 +24,56 @@
 \printindex
 
 \section{TinyOS}
-Al fine di identificare i mesaggi consecutivi abbiamo scelto di 
-associare ad ogni messaggio un id incrementale. \\
-La struttura è la seguente:
-
+In order to keep track of the consecutive messages we decided to identify them with an incremental identifier. \\\\
+The message struct is composed of the fields:
 \begin{itemize}
-   \item \textit{id}: contentente l'id di ogni mote
-   \item \textit{msg\_number}: l'id del messaggio
+   \item \textit{id}: the id of the sender mote
+   \item \textit{msg\_number}: the id of the message sent from that mote
 \end{itemize}
-
-Abbiamo scelto di associare ad ogni mote 3 memorie di grandezza fissata:
-
+We decided to assign three arrays of fixed length to each mote:
 \begin{itemize}
-   \item \textit{near\_motes\_ids}: per salvare l'id dei nodi vicini 
-   \item \textit{near\_motes\_counters}: per contare quanti messaggi consecutivi sono stati ricevuti 
-   \item \textit{near\_motes\_msgs\_number}: per salvare l'id del messaggio che ci si aspetta di ricevere
+   \item \textit{near\_motes\_ids}: to save the id numbers of the near motes
+   \item \textit{near\_motes\_counters}: to save the number of consecutive messages received from that mote
+   \item \textit{near\_motes\_msgs\_number}: to save the id number of the message that we expect to receive from that mote
 \end{itemize}
+Every time a mote sends a message, the id to be assigned to the message is incremented.\\
+At the receiving end of a message, the \textit{near\_motes\_ids} array is scaned to find the id of the sender mote.\\\\
+If the the Id is not found then it is added to the first spot available in the array; otherwise we procede by checking the id of the message received.\\\\
+We compare the expected id number from \textit{near\_motes\_msgs\_number} array with the value received from the mote. If the two values don't match then the counter that keeps track of the consecutive messages is restarted with the value 1.\\\\
+Otherwise check the value of the \textit{near\_motes\_counters} array: if 10 consecutive messages have been received then an alarm is launched and the counter is restarted, otherwise the counter is incremented.
 
-Ogni volta che un mote invia un messaggio, incrementa l'id da associare al messaggio e lo invia.\\\\
-Alla ricezione di un messaggio, si scorre l'array \textit{near\_motes\_ids} in cerca dell'id del mote da cui è stato 
-ricevuto il messaggio. \\
-Se l'id non viene trovato, viene aggiunto nella prima cella disponibile.
-Altrimenti si procede con la verifica dell'id del messaggio. \\
-Quindi si legge il valore aspettato dall'array \textit{near\_motes\_msgs\_number} e si confronta con quello ricevuto. 
-Se i due valori non corrispondo, il contatore associato al mote viene azzerato.\\\\
-Si procede quindi alla verifica del valore contenuto nell'array \textit{near\_motes\_counters}: nel caso sono stati
-ricevuti 10 messaggi consecutivi, si lancia l'allarme e si azzera il contatore, altrimenti il contatore viene incrementato.
 
 \section{Cooja}
-Abbiamo testato il funzionamento in \textit{Cooja} inserendo 5 \textit{Sky mote} e provando varie configurazioni di questi nella Network.\\
-Nell'implementazioe abbiamo assunto che la ricezione dei messaggi avvenga senza interferenze, per questo abbiamo
-ignorato i casi in cui il contatore viene resettato a causa di un messaggio non consegnato correttamente.
+We tested the functioning of the system by simulating it in \textit{Cooja} with 5 \textit{Sky mote}s and trying various configurations.\\\\
+During the simulation we assumed that the messages are received without any interferences, therefore we ignored the cases where the counter is automatically reset because of a non correct delivery of a message.
 \\\\
-Di seguito gli screenshots delle configurazioni testate (sono ordinati secondo il log file)
+Here are some screenshots of the configuration tried during the simulation (ordered as in the log file)
 \\
-\includegraphics[scale=0.1]{inserire_immagine_qui_e_in_cartella_res.png}
-\\
-Ad ogni nodo abbiamo associato un socket verso l'ip di \textit{Node-RED} ognuno con una porta differente (da 6001 a 6005)
+\begin{center}
+\includegraphics[scale=1]{img1.png}
+\includegraphics[scale=1]{img2.png}
+\includegraphics[scale=1]{img3.png}
+\includegraphics[scale=1]{img4.png}
+\includegraphics[scale=1]{img5.png}
+\includegraphics[scale=1]{img6.png}
+\includegraphics[scale=1]{img7.png}
+\includegraphics[scale=1]{img8.png}
+\includegraphics[scale=1]{img9.png}
+\includegraphics[scale=1]{img10.png}
+\end{center}
+We have assigned a socket to each mote with a different port number (from 6001 to 6005) towards the ip of \textit{Node-RED}.
+
 
 \section{Node-RED}
 
-Abbiamo creato 5 (numero di mote scelti per il testing) nodi \textit{tcp in} ognuno ascoltante sulla porta del nodo associato.\\
-Abbiamo quindi inserito un nodo \textit{function} per filtrare i messaggi di allarme ed estrarne gli id dei mote interessati.\\
-Infine abbiamo utilizzato un nodo \textit{htttp request} per mandare una POST request verso \textit{IFTTT} specificando la nostra API key
+We created 5 (number of motes chosen for the simulation) \textit{tcp in} nodes, each of them listening on the port of the associated mote.\\
+Then we used the \textit{function} node to filter the alarm messages from the log sent by \textit{Cooja} and extract the Ids of the involved motes.\\
+Finally we used the \textit{htttp request} node to send a POST request towards \textit{IFTTT} by specifying our API key.
 
 \section{IFTTT}
-Ricevuti i dati tramite un applet \textit{Webhooks} ascoltante sull'evento \textit{ALARM},
-inviamo una notifica sull'app \textit{IFTTT} per cellulare con il seguente testo:\\\\
+Once received the messages through a \textit{Webhooks} applet listening on the \textit{ALARM} event,
+we sent a notification on \textit{IFTTT} app for the cellular phone containing the message:\\\\
 \textit{"ALARM mote x: I'm close to mote y! COVID"}\\\\
-Dove \textit{x} è l'id del mote che ha inviato il messaggio.
+Wheree \textit{x} is the id of the mote that sent the alarm.
 
 \end{document}
