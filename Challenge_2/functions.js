@@ -113,7 +113,7 @@ if(filt_line.length > 0){
 var array = msg.payload;
 var filt_line = [];
 
-var API_KEY = "LZPBV1R1ZZ5CBT8E";
+var API_KEY = "YOURAPIKEY";
 var CHANNEL_ID = "1359547";
 
 for(var value of array){
@@ -122,7 +122,7 @@ for(var value of array){
     msg.payload="field1="+field1+"&status=MQTTPUBLISH";
 }
 
-var API_KEY = "LZPBV1R1ZZ5CBT8E";
+var API_KEY = "YOURAPIKEY";
 var CHANNEL_ID = "1359547";
 var field1= json.value;
 msg.topic = 'channels/'+CHANNEL_ID+'/publish/' + API_KEY;
