@@ -133,7 +133,7 @@ return msg;
 
 var value = msg.payload;
 
-var API_KEY = "LZPBV1R1ZZ5CBT8E";
+var API_KEY = "YOURAPIKEY";
 var CHANNEL_ID = "1359547";
 var field2= value;
 msg.topic = 'channels/'+CHANNEL_ID+'/publish/' + API_KEY;
